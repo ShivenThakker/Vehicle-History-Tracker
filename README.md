@@ -13,7 +13,6 @@ Traditional vehicle history services (Carfax, AutoCheck) are centralised databas
 ![Dashboard Screenshot](assets/screenshot-dashboard.png)
 ![History View Screenshot](assets/screenshot-history.png)
 
-> 📌 **Note:** Replace the image paths above with your actual screenshots placed in an `/assets` folder in the repo root.
 
 ---
 
