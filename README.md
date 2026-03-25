@@ -12,6 +12,9 @@ Traditional vehicle history services (Carfax, AutoCheck) are centralised databas
 
 <img width="1539" height="728" alt="image" src="https://github.com/user-attachments/assets/5a1b3b01-bd94-41d1-b6e3-0324834fcc76" />
 
+<img width="1408" height="905" alt="image" src="https://github.com/user-attachments/assets/c7c01d67-5672-497b-90cf-cf953c2053c0" />
+
+
 ---
 
 ## 🔍 What It Does
