@@ -200,8 +200,8 @@ stellar contract invoke \
 ## 🔗 Deployed Smart Contract
 
 **Network:** Stellar Testnet  
-**Contract ID:** https://stellar.expert/explorer/testnet/contract/CDLA6A2DBHZLWTLGPUJ3A6MQI3JU6XBE42ECLHRPVMHKMC3S7EPUBO7X  
-**Explorer:** [https://stellar.expert/explorer/testnet/contract/XXX](https://stellar.expert/explorer/testnet/contract/XXX)
+**Contract ID:** CDLA6A2DBHZLWTLGPUJ3A6MQI3JU6XBE42ECLHRPVMHKMC3S7EPUBO7X  
+**Explorer:** https://stellar.expert/explorer/testnet/contract/CDLA6A2DBHZLWTLGPUJ3A6MQI3JU6XBE42ECLHRPVMHKMC3S7EPUBO7X 
 
 
 
