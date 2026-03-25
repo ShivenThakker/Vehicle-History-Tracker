@@ -10,10 +10,10 @@ The **Vehicle History Tracker** is a decentralised application that records the 
 
 Traditional vehicle history services (Carfax, AutoCheck) are centralised databases that can be manipulated, selectively disclosed, or simply wrong. This contract makes fraud structurally impossible: no one can delete a record, roll back mileage, or forge an ownership chain.
 
-<img width="1539" height="728" alt="image" src="https://github.com/user-attachments/assets/5a1b3b01-bd94-41d1-b6e3-0324834fcc76" />
+![Dashboard Screenshot](assets/screenshot-dashboard.png)
+![History View Screenshot](assets/screenshot-history.png)
 
-<img width="1408" height="905" alt="image" src="https://github.com/user-attachments/assets/c7c01d67-5672-497b-90cf-cf953c2053c0" />
-
+> 📌 **Note:** Replace the image paths above with your actual screenshots placed in an `/assets` folder in the repo root.
 
 ---
 
@@ -37,14 +37,14 @@ Traditional vehicle history services (Carfax, AutoCheck) are centralised databas
 
 ## ✨ Features
 
-- **🔒 Tamper-proof records** — All history events are append-only. Nothing is ever deleted.
-- **📈 Mileage fraud detection** — The contract enforces monotonically increasing mileage. Any attempt to record a lower odometer reading than the previous entry is rejected on-chain.
-- **🔑 Role-based access** — Only the current owner (or the contract admin) can add events. Ownership is cryptographically enforced via Stellar wallet signatures.
-- **🚨 Stolen vehicle flag** — Authorities or admin can mark a VIN as stolen, which automatically blocks ownership transfers until cleared.
-- **👤 Full ownership chain** — Every transfer records both the previous and new owner with an on-chain timestamp, creating an unbroken provenance trail.
-- **⚡ Cheap & fast** — Built on Stellar, which settles in ~5 seconds with sub-cent transaction fees.
-- **🌐 Permissionless reads** — Anyone can query a vehicle's history without a wallet or fees.
-- **🧪 Fully tested** — Six unit tests covering the happy path and all major error conditions.
+* **🔒 Tamper-proof records** — All history events are append-only. Nothing is ever deleted.
+* **📈 Mileage fraud detection** — The contract enforces monotonically increasing mileage. Any attempt to record a lower odometer reading than the previous entry is rejected on-chain.
+* **🔑 Role-based access** — Only the current owner (or the contract admin) can add events. Ownership is cryptographically enforced via Stellar wallet signatures.
+* **🚨 Stolen vehicle flag** — Authorities or admin can mark a VIN as stolen, which automatically blocks ownership transfers until cleared.
+* **👤 Full ownership chain** — Every transfer records both the previous and new owner with an on-chain timestamp, creating an unbroken provenance trail.
+* **⚡ Cheap & fast** — Built on Stellar, which settles in ~5 seconds with sub-cent transaction fees.
+* **🌐 Permissionless reads** — Anyone can query a vehicle's history without a wallet or fees.
+* **🧪 Fully tested** — Six unit tests covering the happy path and all major error conditions.
 
 ---
 
@@ -54,8 +54,9 @@ Traditional vehicle history services (Carfax, AutoCheck) are centralised databas
 |---|---|
 | Blockchain | [Stellar](https://stellar.org) |
 | Smart Contract Runtime | [Soroban](https://soroban.stellar.org) |
-| Language | Rust (`no_std`) |
+| Smart Contract Language | Rust (`no_std`) |
 | SDK | `soroban-sdk v21` |
+| Frontend | Next.js (TypeScript) |
 | Testing | Soroban test utilities (`mock_all_auths`) |
 
 ---
@@ -64,9 +65,17 @@ Traditional vehicle history services (Carfax, AutoCheck) are centralised databas
 
 ```
 vehicle-history-tracker/
-├── Cargo.toml          # Rust project manifest & Soroban dependencies
-└── src/
-    └── lib.rs          # Full smart contract + unit tests
+├── contract/               # Soroban smart contract (Rust)
+│   ├── Cargo.toml          # Rust project manifest & Soroban dependencies
+│   └── src/
+│       └── lib.rs          # Full smart contract + unit tests
+├── client/                 # Next.js frontend (TypeScript)
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── next.config.ts
+├── .gitignore
+└── README.md
 ```
 
 ---
@@ -84,43 +93,51 @@ rustup target add wasm32-unknown-unknown
 
 # Install the Stellar CLI
 cargo install --locked stellar-cli --features opt
+
+# Install Node.js (v18+ recommended) for the frontend
+# https://nodejs.org
 ```
 
-### Build
+---
+
+### 📦 Smart Contract
+
+#### Build
 
 ```bash
-git clone https://github.com/your-username/vehicle-history-tracker
-cd vehicle-history-tracker
+cd contract
 
 # Compile to WASM
 stellar contract build
 ```
 
 The optimised `.wasm` binary will appear at:
+
 ```
 target/wasm32-unknown-unknown/release/vehicle_history_tracker.wasm
 ```
 
-### Run Tests
+#### Run Tests
 
 ```bash
 cargo test
 ```
 
 Expected output:
+
 ```
 running 6 tests
-test tests::test_register_and_get          ... ok
-test tests::test_add_history_event         ... ok
-test tests::test_ownership_transfer        ... ok
-test tests::test_stolen_flag               ... ok
-test tests::test_double_registration_fails ... ok
+test tests::test_register_and_get            ... ok
+test tests::test_add_history_event           ... ok
+test tests::test_ownership_transfer          ... ok
+test tests::test_stolen_flag                 ... ok
+test tests::test_double_registration_fails   ... ok
 test tests::test_decreasing_mileage_rejected ... ok
 
 test result: ok. 6 passed; 0 failed
 ```
 
-### Deploy to Testnet
+#### Deploy to Testnet
 
 ```bash
 # Generate a deployer keypair
@@ -146,7 +163,45 @@ stellar contract invoke \
 
 ---
 
-## 📡 Example Interactions
+### 🖥️ Frontend (Client)
+
+The `client/` directory contains a **Next.js** frontend that lets users register vehicles, view history, and interact with the smart contract through a browser using the [Freighter](https://www.freighter.app/) Stellar wallet.
+
+#### Install dependencies
+
+```bash
+cd client
+npm install
+```
+
+#### Set up environment variables
+
+Create a `.env.local` file in the `client/` directory:
+
+```env
+NEXT_PUBLIC_CONTRACT_ID=CDLA6A2DBHZLWTLGPUJ3A6MQI3JU6XBE42ECLHRPVMHKMC3S7EPUBO7X
+NEXT_PUBLIC_NETWORK=testnet
+NEXT_PUBLIC_RPC_URL=https://soroban-testnet.stellar.org
+```
+
+#### Run locally
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:3000`.
+
+#### Build for production
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## 📡 Example Contract Interactions
 
 ### Register a vehicle
 
@@ -192,24 +247,22 @@ stellar contract invoke \
 
 ## 🗺️ Roadmap
 
-- [ ] Multi-party inspection reports (mechanic signs with their own wallet)
-- [ ] IPFS attachment hashes (store repair photos off-chain, anchor hash on-chain)
-- [ ] Recall notices linked to VIN patterns
-- [ ] Frontend dApp (React + Freighter wallet integration)
-- [ ] Insurance integration via cross-contract calls
+* Multi-party inspection reports (mechanic signs with their own wallet)
+* IPFS attachment hashes (store repair photos off-chain, anchor hash on-chain)
+* Recall notices linked to VIN patterns
+* Frontend dApp (React + Freighter wallet integration)
+* Insurance integration via cross-contract calls
 
 ---
 
 ## 🔗 Deployed Smart Contract
 
 **Network:** Stellar Testnet  
-**Contract ID:** CDLA6A2DBHZLWTLGPUJ3A6MQI3JU6XBE42ECLHRPVMHKMC3S7EPUBO7X  
-**Explorer:** https://stellar.expert/explorer/testnet/contract/CDLA6A2DBHZLWTLGPUJ3A6MQI3JU6XBE42ECLHRPVMHKMC3S7EPUBO7X 
-
-
+**Contract ID:** `CDLA6A2DBHZLWTLGPUJ3A6MQI3JU6XBE42ECLHRPVMHKMC3S7EPUBO7X`  
+**Explorer:** https://stellar.expert/explorer/testnet/contract/CDLA6A2DBHZLWTLGPUJ3A6MQI3JU6XBE42ECLHRPVMHKMC3S7EPUBO7X
 
 ---
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](./LICENSE) for details.
